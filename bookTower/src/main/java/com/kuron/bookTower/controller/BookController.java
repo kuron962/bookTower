@@ -2,59 +2,57 @@ package com.kuron.bookTower.controller;
 
 import com.kuron.bookTower.entity.Book;
 import com.kuron.bookTower.form.AddBookForm;
+import com.kuron.bookTower.form.EditBookForm;
 import com.kuron.bookTower.service.BookService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 public class BookController {
 
     @Autowired
     BookService bookService;
 
-    @GetMapping(value = "/hello")
-    public String getTest(HttpServletRequest request) {
-        return "こんにちは!!";
-    }
-
+    // 本の一覧を取得
     @GetMapping("/books")
-    public String getBooks(Model model) {
-        // serviceを使って、本の一覧をDBから取得する
-        List<Book> bookList = bookService.findAll();
-        // modelに本の一覧を設定して、画面に渡す
-        model.addAttribute("bookList", bookList);
-        // bookList.htmlの表示
-        return "books";
+    public List<Book> getBooks(HttpServletRequest request) {
+        List<Book> bookList = bookService.getBooks();
+        return bookList;
     }
 
-    @GetMapping("/add-book")
-    public String getBookForm(Model model) {
-        model.addAttribute("addBookForm", new AddBookForm());
-        return "add";
+    // categoryごとに本の一覧を取得
+    @GetMapping("/books/{category}")
+    public List<Book> getBooksByCategory(HttpServletRequest request, @PathVariable("category") String category) {
+        List<Book> bookList = bookService.getBooksByCategory(category);
+        return bookList;
     }
 
-    @PostMapping("/add-book")
-    public String addBook(@ModelAttribute @Validated AddBookForm addBookForm, BindingResult result, Model model) {
+    @GetMapping("/books/{status}")
+    public List<Book> getBooksByStatus(HttpServletRequest request, @PathVariable("status") String status) {
+        List<Book> bookList = bookService.getBooksByStatus(status);
+        return bookList;
+    }
 
-        // バリデーションエラーの場合
-        if(result.hasErrors()) {
-            // 新規登録画面に遷移
-            return "add";
-        }
-        // 本を登録する
-        bookService.add(addBookForm);
+    // 本を追加
+    @PostMapping("/book/add")
+    public void addBook(@RequestBody @Validated AddBookForm fm) {
+        bookService.addBook(fm);
+    }
 
-        // 本の一覧表示画面にリダイレクト
-        return "redirect:/books";
+    // 本を編集
+    @PostMapping("/book/edit")
+    public void editBook(@RequestBody @Validated EditBookForm fm) {
+        bookService.editBook(fm);
+    }
+
+    // 本を削除
+    @DeleteMapping("/book/delete")
+    public void deleteBook(@ModelAttribute int id) {
+        bookService.deleteBook(id);
     }
 }
 

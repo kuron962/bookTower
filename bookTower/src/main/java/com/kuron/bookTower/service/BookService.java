@@ -17,13 +17,19 @@ public class BookService {
     @Autowired
     BookRepository bookRepository;
 
-    // DBに登録済のレコードを全件取得
-    public List<Book> findAll() {
+    public List<Book> getBooks() {
         return bookRepository.findAll();
     }
 
-    // 入力した内容をDBに登録
-    public void add(AddBookForm fm) {
+    public List<Book> getBooksByCategory(String category) {
+        return bookRepository.findByCategory(category);
+    }
+
+    public List<Book> getBooksByStatus(String status) {
+        return bookRepository.findByStatus(status);
+    }
+
+    public void addBook(AddBookForm fm) {
         // DBに登録する値を保持するインスタンス
         Book book = new Book();
 
@@ -53,7 +59,7 @@ public class BookService {
     }
 
     // 本を更新する
-    public void edit(EditBookForm fm) {
+    public void editBook(EditBookForm fm) {
 
         // データベースに登録する値を保持するインスタンスの作成
         Book book = new Book();
@@ -69,9 +75,7 @@ public class BookService {
     }
 
     // 本を削除する
-    public void delete(Integer id) {
-
-        // idを指定して、データベースからデータを削除する
+    public void deleteBook(Integer id) {
         bookRepository.deleteById(id);
     }
 }
