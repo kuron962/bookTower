@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -27,6 +28,10 @@ public class BookService {
 
     public List<Book> getBooksByStatus(String status) {
         return bookRepository.findByStatus(status);
+    }
+
+    public Optional<Book> getBooksById(int id) {
+        return bookRepository.findById(id);
     }
 
     public void addBook(AddBookForm fm) {

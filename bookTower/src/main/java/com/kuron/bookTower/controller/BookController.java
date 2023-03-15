@@ -10,6 +10,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class BookController {
@@ -25,16 +26,22 @@ public class BookController {
     }
 
     // categoryごとに本の一覧を取得
-    @GetMapping("/books/{category}")
+    @GetMapping("/books/category{category}")
     public List<Book> getBooksByCategory(HttpServletRequest request, @PathVariable("category") String category) {
         List<Book> bookList = bookService.getBooksByCategory(category);
         return bookList;
     }
 
-    @GetMapping("/books/{status}")
+    @GetMapping("/books/status{status}")
     public List<Book> getBooksByStatus(HttpServletRequest request, @PathVariable("status") String status) {
         List<Book> bookList = bookService.getBooksByStatus(status);
         return bookList;
+    }
+
+    @GetMapping("/books/id{id}")
+    public Optional<Book> getBooksById(HttpServletRequest request, @PathVariable("id") int id) {
+        Optional<Book> book = bookService.getBooksById(id);
+        return book;
     }
 
     // 本を追加
@@ -50,8 +57,8 @@ public class BookController {
     }
 
     // 本を削除
-    @DeleteMapping("/book/delete")
-    public void deleteBook(@ModelAttribute int id) {
+    @DeleteMapping("/book/delete/{id}")
+    public void deleteBook(@PathVariable("id") int id) {
         bookService.deleteBook(id);
     }
 }
