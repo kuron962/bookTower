@@ -20,28 +20,14 @@ public class BookController {
 
     // 本の一覧を取得
     @GetMapping("/books")
-    public List<Book> getBooks(HttpServletRequest request) {
-        List<Book> bookList = bookService.getBooks();
-        return bookList;
+    public List<Book> getBooks() {
+        return bookService.getBooks();
     }
 
-    // categoryごとに本の一覧を取得
-    @GetMapping("/books/category{category}")
-    public List<Book> getBooksByCategory(HttpServletRequest request, @PathVariable("category") String category) {
-        List<Book> bookList = bookService.getBooksByCategory(category);
-        return bookList;
-    }
-
-    @GetMapping("/books/status{status}")
-    public List<Book> getBooksByStatus(HttpServletRequest request, @PathVariable("status") String status) {
-        List<Book> bookList = bookService.getBooksByStatus(status);
-        return bookList;
-    }
-
-    @GetMapping("/books/id{id}")
-    public Optional<Book> getBooksById(HttpServletRequest request, @PathVariable("id") int id) {
-        Optional<Book> book = bookService.getBooksById(id);
-        return book;
+    // 本をIDで取得
+    @GetMapping("/books/{id}")
+    public Optional<Book> getBookById(@PathVariable("id") int id) {
+        return bookService.getBookById(id);
     }
 
     // 本を追加
@@ -51,9 +37,9 @@ public class BookController {
     }
 
     // 本を編集
-    @PostMapping("/book/edit")
-    public void editBook(@RequestBody @Validated EditBookForm fm) {
-        bookService.editBook(fm);
+    @PostMapping("/book/edit/{id}")
+    public void editBook(@PathVariable("id") int id, @RequestBody @Validated EditBookForm fm) {
+        bookService.editBook(id,fm);
     }
 
     // 本を削除
